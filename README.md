@@ -1,5 +1,6 @@
 # Link-Cleaner
-"You are sharing URLs with Tracking Links. Please stop." > Built for privacy, vibe coded in Google Antigravity.
+"You are sharing URLs with Tracking Links. Please stop." 
+> Built for privacy, vibe coded in Google Antigravity.
 
 📖 About The Project
 
@@ -7,7 +8,8 @@ Link-Cleaner is a simple, no-nonsense web tool designed to strip invasive tracki
 
 We’ve all seen them—those incredibly long URLs filled with ?fbclid=, ?utm_source=, and other nonsense attached to the end of a link. These "identifiers" exist to track your activity across the web. This project restores your privacy (and the aesthetics of your links) by surgically removing that "noise" while keeping the destination intact.
 
-The inspiration for this tool comes from the article "You are sharing URLs with Tracking Links. Please stop" by Ian Darwin.
+The inspiration for this tool comes from the article "You are sharing URLs with Tracking Links. Please stop" by Ian Darwin
+which you can check ou here: http://medium.com/@ian-darwin/you-are-sharing-urls-with-tracking-links-please-stop-502c6f54895
 
 ✨ Features
 Instant Cleaning: Paste a dirty link, get a clean one instantly.

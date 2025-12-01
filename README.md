@@ -2,6 +2,7 @@
 "You are sharing URLs with Tracking Links. Please stop." > Built for privacy, vibe coded in Google Antigravity.
 
 📖 About The Project
+
 Link-Cleaner is a simple, no-nonsense web tool designed to strip invasive tracking identifiers from the links you share.
 
 We’ve all seen them—those incredibly long URLs filled with ?fbclid=, ?utm_source=, and other nonsense attached to the end of a link. These "identifiers" exist to track your activity across the web. This project restores your privacy (and the aesthetics of your links) by surgically removing that "noise" while keeping the destination intact.

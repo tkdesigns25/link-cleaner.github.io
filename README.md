@@ -27,11 +27,9 @@ Paste it into the input box on the site.
 
 Click Clean.
 
-Copy your fresh, tracking-free URL.
+Copy, Share or Open your fresh, tracking-free URL.
 
 🔗 Connect with the Author
-TK Designs Designer & Developer
+Tarun Kumar, UX Designer
 
 [![Connect on LinkedIn](https://img.shields.io/badge/Connect_on_LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/tk-designs/)
-
-<a href="https://www.linkedin.com/in/tk-designs/"> <img src="https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin" alt="Connect on LinkedIn"> </a>

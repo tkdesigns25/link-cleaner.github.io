@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Cleaner | Remove URL Identifiers</title>
+    <meta name="description" content="Clean your URLs by removing tracking identifiers and query parameters instantly.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-glow"></div>
+    <main class="container">
+        <header>
+            <h1>Link Cleaner</h1>
+            <p>Remove clutter and tracking from your links instantly.</p>
+        </header>
+
+        <div class="card">
+            <div class="input-group">
+                <label for="urlInput">Paste your link here</label>
+                <input type="text" id="urlInput" placeholder="https://example.com/page?utm_source=..."
+                    autocomplete="off">
+            </div>
+
+            <button id="cleanBtn" class="btn-primary">
+                <span class="btn-text">Clean Link</span>
+                <span class="btn-glow"></span>
+            </button>
+
+            <div class="output-group hidden" id="outputGroup">
+                <label for="cleanUrl">Cleaned Link</label>
+                <div class="result-box">
+                    <div class="result-row">
+                        <input type="text" id="cleanUrl" readonly>
+                        <button id="copyBtn" class="btn-icon" aria-label="Copy to clipboard">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-copy">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2-2v1"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="openBtn" class="btn-secondary" aria-label="Open link in new tab">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-external-link">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            <span>OPEN LINK</span>
+                        </button>
+                        <button id="shareBtn" class="btn-secondary" aria-label="Share link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-share-2">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            <span>SHARE LINK</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="toast" class="toast">Copied to clipboard!</div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>

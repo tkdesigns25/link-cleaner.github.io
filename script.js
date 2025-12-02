@@ -35,11 +35,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Simple split logic as requested
-            // "remove every char from the first "?" mark including the question mark"
-            const cleaned = originalUrl.split('?')[0];
+            const url = new URL(originalUrl);
+            const params = url.searchParams;
 
-            cleanUrlInput.value = cleaned;
+            // List of tracking parameters to remove
+            const trackingParams = [
+                'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
+                'fbclid', 'gclid', 'gclsrc', 'dclid', 'gra', 'grb', 'grc', 'grd',
+                'si', 'pp', 's', 't', 'igsh' // 't' is tricky, sometimes timestamp, sometimes tracking. 
+                // YouTube uses 't' for timestamp, so we should probably KEEP 't' generally, 
+                // or handle it specifically. The user mentioned "timed link from youtube", 
+                // so we MUST preserve 't' for YouTube. 
+                // 'si' is YouTube share identifier.
+            ];
+
+            // Refined list based on user request to keep timestamps
+            const paramsToRemove = [
+                'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
+                'fbclid', 'gclid', 'gclsrc', 'dclid',
+                'si', 'pp', 'igsh'
+            ];
+
+            // Iterate and delete tracking params
+            paramsToRemove.forEach(param => {
+                if (params.has(param)) {
+                    params.delete(param);
+                }
+            });
+
+            // Special handling for YouTube 'si' if not caught above (it is caught)
+            // but 't' should be preserved.
+
+            cleanUrlInput.value = url.toString();
             outputGroup.classList.remove('hidden');
 
             // Animate result appearance
@@ -52,7 +79,43 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         } catch (e) {
-            console.error("Error cleaning URL", e);
+            // Fallback for non-standard URLs or text that isn't a full URL
+            console.warn("Invalid URL, attempting simple cleanup or returning original", e);
+            // If it's not a valid URL object, maybe it's just a string? 
+            // But the user input placeholder suggests full URLs. 
+            // Let's try to handle cases where protocol might be missing?
+            // For now, if it fails URL parsing, we might just return the original 
+            // or try the simple split as fallback if it looks like a URL.
+
+            // Simple fallback: if it contains '?', try split, otherwise return original
+            if (originalUrl.includes('?')) {
+                // Check if it looks like a URL
+                if (originalUrl.match(/^(http|https):\/\//)) {
+                    // If it failed new URL() but has http, it's really broken.
+                    cleanUrlInput.value = originalUrl;
+                } else {
+                    // Maybe missing protocol?
+                    try {
+                        const fixedUrl = new URL('https://' + originalUrl);
+                        // Recurse or just apply logic here? Let's just apply logic.
+                        const params = fixedUrl.searchParams;
+                        const paramsToRemove = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', 'si', 'pp', 'igsh'];
+                        paramsToRemove.forEach(p => params.delete(p));
+                        cleanUrlInput.value = fixedUrl.toString().replace('https://', ''); // Return as entered? 
+                        // Actually, better to just return cleaned full URL or simple split if complex parsing fails.
+                        // Let's stick to the simple split as a safe fallback for "text" inputs
+                        cleanUrlInput.value = originalUrl.split('?')[0];
+                    } catch (err) {
+                        cleanUrlInput.value = originalUrl.split('?')[0];
+                    }
+                }
+            } else {
+                cleanUrlInput.value = originalUrl;
+            }
+
+            outputGroup.classList.remove('hidden');
+            outputGroup.style.opacity = '1';
+            outputGroup.style.transform = 'translateY(0)';
         }
     });
 

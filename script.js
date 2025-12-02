@@ -7,6 +7,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBtn = document.getElementById('openBtn');
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
+    const clearInputBtn = document.getElementById('clearInputBtn');
+
+    // Show/hide clear button based on input
+    urlInput.addEventListener('input', () => {
+        if (urlInput.value.trim().length > 0) {
+            clearInputBtn.classList.remove('hidden');
+        } else {
+            clearInputBtn.classList.add('hidden');
+        }
+    });
+
+    // Clear input functionality
+    clearInputBtn.addEventListener('click', () => {
+        urlInput.value = '';
+        clearInputBtn.classList.add('hidden');
+        urlInput.focus();
+    });
 
     cleanBtn.addEventListener('click', () => {
         const originalUrl = urlInput.value.trim();

@@ -95,6 +95,8 @@ label {
 input[type="text"] {
     width: 100%;
     padding: 1rem 1.25rem;
+    padding-right: 40px;
+    /* Prevent text overlap with clear button */
     background-color: var(--input-bg);
     border: 2px solid transparent;
     border-radius: 0.75rem;
@@ -108,6 +110,39 @@ input[type="text"]:focus {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.clear-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    /* Red background on hover */
+    color: #ef4444;
+    /* Red icon on hover */
+}
+
+.clear-btn.hidden {
+    display: none;
 }
 
 .btn-primary {
@@ -221,6 +256,7 @@ input[type="text"]:focus {
 .btn-icon:hover {
     background-color: #475569;
     color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .toast {
@@ -262,5 +298,142 @@ input[type="text"]:focus {
 
     .card {
         padding: 1.5rem;
+    }
+}
+
+/* Footer Card */
+.footer-card {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    /* Allow width to fit content */
+    min-width: 300px;
+    max-width: 90%;
+    /* Prevent it from being too wide */
+    background-color: #1e293b;
+    border-radius: 20px;
+    padding: 12px 12px;
+    /* Equal padding to address user feedback */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-img {
+    width: 40px;
+    /* Reduced size */
+    height: 40px;
+    /* Reduced size */
+    border-radius: 10px;
+    /* Adjusted radius */
+    /* Rounded square */
+    object-fit: cover;
+    border: 2px solid #94A3B8;
+    /* Orange border as seen in image */
+}
+
+.created-by {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.created-by span {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.created-by strong {
+    color: #f8fafc;
+    font-size: 1rem;
+    /* Reduced font size */
+    font-weight: 700;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-right span {
+    color: #f8fafc;
+    font-size: 1rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 10px;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #334155;
+    /* Dark background for icons */
+    color: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.social-links a:hover {
+    transform: translateY(-2px);
+    background-color: #475569;
+}
+
+.social-links a[aria-label="Website"]:hover {
+    background-color: #3b82f6;
+}
+
+.social-links a[aria-label="LinkedIn"]:hover {
+    background-color: #0077b5;
+}
+
+.social-links a[aria-label="Behance"]:hover {
+    background-color: #1769ff;
+}
+
+.social-links a[aria-label="GitHub"]:hover {
+    background-color: #333;
+}
+
+.social-links svg {
+    width: 24px;
+    height: 24px;
+}
+
+@media (max-width: 768px) {
+    .footer-card {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+        bottom: 10px;
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .footer-right {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .footer-right span {
+        font-size: 0.9rem;
     }
 }

@@ -1,14 +1,18 @@
 :root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --accent-color: #38bdf8;
-    --accent-glow: rgba(56, 189, 248, 0.5);
-    --btn-gradient: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
-    --input-bg: #334155;
-    --border-color: #475569;
+    --bg-color: #0B101B;
+    /* Deep Navy/Black from background */
+    --card-bg: #161E2E;
+    /* Dark Slate for card */
+    --input-bg: #252F42;
+    /* Darker slate for inputs */
+    --text-primary: #FFFFFF;
+    --text-secondary: #94A3B8;
+    --accent-color: #2563EB;
+    /* Bright Blue */
+    --accent-hover: #1D4ED8;
+    --border-color: #2D3748;
     --font-family: 'Outfit', sans-serif;
+    --footer-bg: #161E2E;
 }
 
 * {
@@ -23,100 +27,106 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    overflow-x: hidden;
+    justify-content: center;
+    padding: 2rem;
     position: relative;
 }
 
+/* Background Glow Effect - Subtle */
 .background-glow {
-    position: absolute;
-    top: -20%;
-    left: -20%;
-    width: 140%;
-    height: 140%;
-    background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0) 50%);
-    z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
     pointer-events: none;
+    z-index: -1;
 }
 
+/* Main Container */
 .container {
     width: 100%;
-    max-width: 500px;
-    padding: 2rem;
-    animation: fadeIn 0.8s ease-out;
+    max-width: 420px;
+    /* Compact card width */
+    z-index: 1;
+    margin-bottom: 100px;
+    /* Space for footer */
 }
 
+/* Header - Visually hidden on desktop if needed, but keeping for context based on mobile image */
 header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 header h1 {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    background: linear-gradient(to right, #fff, #94a3b8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.02em;
+    color: var(--text-primary);
 }
 
 header p {
     color: var(--text-secondary);
-    font-size: 1.1rem;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
+/* Main Card */
 .card {
     background-color: var(--card-bg);
-    padding: 2.5rem;
+    padding: 2rem;
     border-radius: 1.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Inputs */
 .input-group,
 .output-group {
     margin-bottom: 1.5rem;
 }
 
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+.input-wrapper {
+    position: relative;
 }
 
 input[type="text"] {
     width: 100%;
-    padding: 1rem 1.25rem;
-    padding-right: 40px;
-    /* Prevent text overlap with clear button */
+    padding: 1rem;
     background-color: var(--input-bg);
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     border-radius: 0.75rem;
     color: var(--text-primary);
     font-size: 1rem;
     font-family: var(--font-family);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 input[type="text"]:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-.input-wrapper {
-    position: relative;
-    width: 100%;
+input[type="text"]::placeholder {
+    color: #4B5563;
 }
 
+/* Clear Button */
 .clear-btn {
     position: absolute;
     right: 12px;
@@ -130,64 +140,42 @@ input[type="text"]:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
+    transition: color 0.2s;
 }
 
 .clear-btn:hover {
-    background-color: rgba(239, 68, 68, 0.1);
-    /* Red background on hover */
-    color: #ef4444;
-    /* Red icon on hover */
+    color: #EF4444;
 }
 
 .clear-btn.hidden {
     display: none;
 }
 
+/* Primary Button (Clean Link) */
 .btn-primary {
     width: 100%;
     padding: 1rem;
-    background: var(--btn-gradient);
+    background-color: var(--accent-color);
     border: none;
     border-radius: 0.75rem;
     color: white;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease;
     font-family: var(--font-family);
+    margin-bottom: 1.5rem;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px -5px var(--accent-glow);
+    background-color: var(--accent-hover);
 }
 
 .btn-primary:active {
-    transform: translateY(0);
+    transform: scale(0.98);
 }
 
-.btn-glow {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.btn-primary:hover .btn-glow {
-    left: 100%;
-}
-
-.hidden {
-    display: none;
-}
-
+/* Output Section */
 .result-box {
     display: flex;
     flex-direction: column;
@@ -196,244 +184,207 @@ input[type="text"]:focus {
 
 .result-row {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
 }
 
 .result-row input {
     flex: 1;
-    width: auto;
-    min-width: 0;
 }
 
+/* Icon Buttons (Copy, Open, Share) */
+.btn-icon,
+.btn-secondary {
+    background-color: var(--input-bg);
+    /* Same as input bg */
+    border: none;
+    border-radius: 0.75rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon {
+    width: 54px;
+    /* Match input height approx */
+    flex-shrink: 0;
+}
+
+.btn-icon:hover,
+.btn-secondary:hover {
+    background-color: #334155;
+    color: var(--text-primary);
+}
+
+/* Action Buttons Row */
 .action-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .btn-secondary {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background-color: #334155;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.75rem;
-    color: var(--text-secondary);
+    padding: 1rem;
     font-family: var(--font-family);
     font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    gap: 0.5rem;
 }
 
-.btn-secondary:hover {
-    background-color: #475569;
-    color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.2);
+.hidden {
+    display: none;
 }
 
-.btn-secondary svg {
-    opacity: 0.8;
-}
-
-.btn-icon {
-    background-color: var(--input-bg);
-    border: none;
-    border-radius: 0.75rem;
-    padding: 0 1rem;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-icon:hover {
-    background-color: #475569;
-    color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
+/* Toast Notification */
 .toast {
     margin-top: 0.5rem;
     text-align: center;
-    color: #4ade80;
-    font-size: 0.9rem;
+    color: #10B981;
+    /* Green */
+    font-size: 0.85rem;
     opacity: 0;
-    transition: opacity 0.3s ease;
     height: 0;
     overflow: hidden;
+    transition: opacity 0.3s ease;
 }
 
 .toast.show {
     opacity: 1;
     height: auto;
+    margin-top: 1rem;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@media (max-width: 480px) {
-    header h1 {
-        font-size: 2.5rem;
-    }
-
-    .container {
-        padding: 1rem;
-    }
-
-    .card {
-        padding: 1.5rem;
-    }
-}
-
-/* Footer Card */
+/* Footer - Wide & Floating */
 .footer-card {
     position: fixed;
-    bottom: 20px;
+    /* Floating at bottom on desktop */
+    bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
-    width: auto;
-    /* Allow width to fit content */
-    min-width: 300px;
-    max-width: 90%;
-    /* Prevent it from being too wide */
-    background-color: #1e293b;
-    border-radius: 20px;
-    padding: 12px 12px;
-    /* Equal padding to address user feedback */
+    width: 90%;
+    max-width: 900px;
+    background-color: var(--footer-bg);
+    border-radius: 1.5rem;
+    /* Pill shape */
+    padding: 1.25rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    z-index: 1000;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 10;
 }
 
 .footer-left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 1rem;
 }
 
 .profile-img {
-    width: 40px;
-    /* Reduced size */
-    height: 40px;
-    /* Reduced size */
-    border-radius: 10px;
-    /* Adjusted radius */
-    /* Rounded square */
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     object-fit: cover;
-    border: 2px solid #94A3B8;
-    /* Orange border as seen in image */
+    border: 2px solid #334155;
 }
 
 .created-by {
     display: flex;
     flex-direction: column;
-    line-height: 1.2;
+    line-height: 1.3;
 }
 
 .created-by span {
-    color: #94a3b8;
-    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
 }
 
 .created-by strong {
-    color: #f8fafc;
-    font-size: 1rem;
-    /* Reduced font size */
-    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .footer-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 1.5rem;
 }
 
 .footer-right span {
-    color: #f8fafc;
-    font-size: 1rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
 }
 
 .social-links {
     display: flex;
-    gap: 10px;
+    gap: 0.75rem;
 }
 
 .social-links a {
+    width: 40px;
+    height: 40px;
+    border-radius: 0.75rem;
+    background-color: #252F42;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background-color: #334155;
-    /* Dark background for icons */
-    color: #f8fafc;
+    color: var(--text-secondary);
     transition: all 0.2s ease;
 }
 
 .social-links a:hover {
+    background-color: #334155;
+    color: var(--text-primary);
     transform: translateY(-2px);
-    background-color: #475569;
 }
 
-.social-links a[aria-label="Website"]:hover {
-    background-color: #3b82f6;
-}
-
-.social-links a[aria-label="LinkedIn"]:hover {
-    background-color: #0077b5;
-}
-
-.social-links a[aria-label="Behance"]:hover {
-    background-color: #1769ff;
-}
-
-.social-links a[aria-label="GitHub"]:hover {
-    background-color: #333;
-}
-
-.social-links svg {
-    width: 24px;
-    height: 24px;
-}
-
+/* Mobile Responsive */
 @media (max-width: 768px) {
+    body {
+        justify-content: flex-start;
+        padding: 1.5rem;
+        padding-bottom: 120px;
+        /* Space for footer */
+    }
+
+    .container {
+        max-width: 100%;
+        margin-bottom: 2rem;
+        /* Increased space */
+    }
+
+    /* Footer becomes stacked on mobile */
     .footer-card {
+        position: static;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
         flex-direction: column;
-        gap: 10px;
-        padding: 15px;
-        bottom: 10px;
-        width: 90%;
-        max-width: 400px;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        margin-top: 30px;
+        bottom: auto;
+        left: auto;
     }
 
     .footer-right {
         flex-direction: column;
-        gap: 8px;
+        width: 100%;
+        gap: 1rem;
     }
 
-    .footer-right span {
-        font-size: 0.9rem;
+    .social-links {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .footer-left {
+        flex-direction: column;
+        text-align: center;
     }
 }

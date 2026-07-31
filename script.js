@@ -1,3 +1,55 @@
+// Function to handle the shared content
+async function handleSharedIntent() {
+    try {
+        if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.SendIntent) {
+            const result = await Capacitor.Plugins.SendIntent.checkSendIntentReceived();
+            if (result && result.url) {
+                const inputField = document.getElementById('urlInput');
+                if (inputField) {
+                    inputField.value = decodeURIComponent(result.url);
+                    // Trigger input event to update UI state (hide paste button etc)
+                    inputField.dispatchEvent(new Event('input'));
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Error checking send intent:', err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    }
+
+    // Check on app load (cold start) with a small delay to ensure plugins are ready
+    setTimeout(handleSharedIntent, 500);
+
+    // Also try immediately just in case
+    handleSharedIntent();
+
+    // Listen for future intents (warm start)
+    if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.SendIntent) {
+        window.Capacitor.Plugins.SendIntent.addListener('appSendActionIntent', (data) => {
+            if (data && data.url) {
+                const inputField = document.getElementById('urlInput');
+                if (inputField) {
+                    inputField.value = decodeURIComponent(data.url);
+                    // Trigger input event to update UI state
+                    inputField.dispatchEvent(new Event('input'));
+                }
+            }
+        });
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlInput = document.getElementById('urlInput');
     const cleanBtn = document.getElementById('cleanBtn');
@@ -7,21 +59,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBtn = document.getElementById('openBtn');
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
-    const clearInputBtn = document.getElementById('clearInputBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const pasteBtn = document.getElementById('pasteBtn');
 
-    // Show/hide clear button based on input
-    urlInput.addEventListener('input', () => {
+    // Toggle Clear/Paste buttons
+    function toggleInputButtons() {
         if (urlInput.value.trim().length > 0) {
-            clearInputBtn.classList.remove('hidden');
+            resetBtn.classList.remove('hidden');
+            if (pasteBtn) pasteBtn.classList.add('hidden');
         } else {
-            clearInputBtn.classList.add('hidden');
+            resetBtn.classList.add('hidden');
+            if (pasteBtn) pasteBtn.classList.remove('hidden');
         }
-    });
+    }
 
-    // Clear input functionality
-    clearInputBtn.addEventListener('click', () => {
+    // Initial check
+    toggleInputButtons();
+
+    // Input event listener
+    urlInput.addEventListener('input', toggleInputButtons);
+
+    // Paste Button Click
+    if (pasteBtn) {
+        pasteBtn.addEventListener('click', async () => {
+            try {
+                if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Clipboard) {
+                    const { type, value } = await Capacitor.Plugins.Clipboard.read();
+                    if (value) {
+                        urlInput.value = value;
+                        toggleInputButtons();
+                    } else {
+                        showToast('Clipboard is empty');
+                    }
+                } else {
+                    // Fallback for browser testing
+                    const text = await navigator.clipboard.readText();
+                    urlInput.value = text;
+                    toggleInputButtons();
+                }
+            } catch (err) {
+                console.error('Paste failed:', err);
+                showToast('Failed to paste');
+            }
+        });
+    }
+
+    // Reset Button Click
+    resetBtn.addEventListener('click', () => {
         urlInput.value = '';
-        clearInputBtn.classList.add('hidden');
+        outputGroup.classList.add('hidden'); // Hide results
+        toggleInputButtons();
         urlInput.focus();
     });
 
@@ -138,17 +225,28 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open(cleanUrlInput.value, '_blank');
     });
 
-    shareBtn.addEventListener('click', () => {
+    shareBtn.addEventListener('click', async () => {
         if (!cleanUrlInput.value) return;
 
-        if (navigator.share) {
-            navigator.share({
-                title: 'Cleaned Link',
-                text: 'Here is a cleaned link:',
-                url: cleanUrlInput.value
-            }).catch(console.error);
-        } else {
-            showToast('Sharing not supported');
+        try {
+            if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Share) {
+                await Capacitor.Plugins.Share.share({
+                    title: 'Cleaned Link',
+                    url: cleanUrlInput.value,
+                    dialogTitle: 'Share',
+                });
+            } else if (navigator.share) {
+                await navigator.share({
+                    title: 'Cleaned Link',
+                    url: cleanUrlInput.value
+                });
+            } else {
+                showToast('Sharing not supported');
+            }
+        } catch (err) {
+            console.error('Share failed:', err);
+            // Suppress errors for user cancellation or other share failures
+            // The user specifically requested not to see error popups on exit
         }
     });
 
@@ -166,4 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cleanBtn.click();
         }
     });
+
+
 });

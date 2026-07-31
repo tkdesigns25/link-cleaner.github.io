@@ -232,14 +232,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Share) {
                 await Capacitor.Plugins.Share.share({
                     title: 'Cleaned Link',
-                    text: 'Here is a cleaned link:',
                     url: cleanUrlInput.value,
-                    dialogTitle: 'Share with buddies',
+                    dialogTitle: 'Share',
                 });
             } else if (navigator.share) {
                 await navigator.share({
                     title: 'Cleaned Link',
-                    text: 'Here is a cleaned link:',
                     url: cleanUrlInput.value
                 });
             } else {

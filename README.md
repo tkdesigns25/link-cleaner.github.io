@@ -40,8 +40,9 @@ Inspired by the article *"You are sharing URLs with Tracking Links. Please stop"
 
 ## Links
 
-- [Web app](https://link-cleanser.vercel.app)
-- [GitHub Pages](https://tkdesigns25.github.io/link-cleaner.github.io/)
+- 📱 **[Download Android APK (v1.0.0)](https://github.com/tkdesigns25/link-cleaner.github.io/releases/download/v1.0.0/Link-Cleanser.apk)**
+- 🌐 [Web app](https://link-cleanser.vercel.app)
+- 📄 [GitHub Pages](https://tkdesigns25.github.io/link-cleaner.github.io/)
 
 ## License
 

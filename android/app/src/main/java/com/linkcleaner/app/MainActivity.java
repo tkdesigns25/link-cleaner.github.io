@@ -1,4 +1,4 @@
-package com.resonanteagle.app;
+package com.linkcleaner.app;
 
 import com.getcapacitor.BridgeActivity;
 

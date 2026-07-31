@@ -1,40 +1,48 @@
-# Link-Cleaner
-"You are sharing URLs with Tracking Links. Please stop." 
-> Built for privacy, vibe coded in Google Antigravity.
+# Link-Cleanser
 
-📖 About The Project
+> Strip tracking parameters from URLs instantly. Built for privacy.
 
-Link-Cleaner is a simple, no-nonsense web tool designed to strip invasive tracking identifiers from the links you share.
+## About
 
-We’ve all seen them—those incredibly long URLs filled with ?fbclid=, ?utm_source=, and other nonsense attached to the end of a link. These "identifiers" exist to track your activity across the web. This project restores your privacy (and the aesthetics of your links) by surgically removing that "noise" while keeping the destination intact.
+Link-Cleanser removes invasive tracking identifiers from links before you share them.
 
-The inspiration for this tool comes from the article "You are sharing URLs with Tracking Links. Please stop" by Ian Darwin
-which you can check ou here: http://medium.com/@ian-darwin/you-are-sharing-urls-with-tracking-links-please-stop-502c6f54895
+We've all seen them — long URLs filled with `?fbclid=`, `?utm_source=`, and similar noise. These parameters track your activity across the web. Link-Cleanser surgically removes them while keeping the destination intact.
 
-✨ Features
-Instant Cleaning: Paste a dirty link, get a clean one instantly.
+Inspired by the article *"You are sharing URLs with Tracking Links. Please stop"* by Ian Darwin.
 
-Privacy First: Removes fbclid, gclid, utm_content, and other common tracking parameters.
+## Features
 
-Lightweight: No bloat, just pure URL sanitization.
+- **Instant cleaning** — Paste a dirty link, get a clean one immediately
+- **Privacy first** — Removes `fbclid`, `gclid`, `utm_*`, `si`, `igsh`, and other common trackers
+- **Android share intent** — Share any link directly to Link-Cleanser from any app
+- **Dark / Light mode** — Toggle to your preference, persisted across sessions
+- **Lightweight** — No frameworks, pure HTML/CSS/JS
 
-🤖 How It Was Built: Vibe Coding
-This project was not written line-by-line in a traditional editor. It was Vibe Coded using Google Antigravity (powered by Gemini 3).
+## Tracking parameters removed
 
-Instead of obsessing over syntax, the development process involved "forgetting the code exists" and collaborating with AI agents through natural language prompts. The result is a functional, modern application generated purely from the vibe and intent of the privacy requirements.
+| Source | Parameters |
+|---|---|
+| Google Analytics | `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content` |
+| Google Ads | `gclid`, `gclsrc`, `dclid` |
+| Facebook | `fbclid` |
+| YouTube | `si` |
+| Instagram | `igsh` |
+| Other | `pp` |
 
-🚀 Usage
-Copy a link with tracking parameters (e.g., example.com?fbclid=123xyz...).
+## Usage
 
-Paste it into the input box on the site.
+1. Copy a link with tracking parameters (e.g. `example.com?fbclid=123xyz...`)
+2. Paste it into the input box
+3. Click **Clean Link**
+4. Copy, Share or Open your clean URL
 
-Click Clean.
+**Or on Android:** tap Share on any link → select Link-Cleanser → link auto-fills → clean it.
 
-Copy, Share or Open your fresh, tracking-free URL.
+## Links
 
-👉 Check out the product here: (https://tkdesigns25.github.io/link-cleaner.github.io/)
+- [Web app](https://link-cleanser.vercel.app)
+- [GitHub Pages](https://tkdesigns25.github.io/link-cleaner.github.io/)
 
-🔗 Connect with the Author
-Tarun Kumar, UX Designer
+## License
 
-[![Connect on LinkedIn](https://img.shields.io/badge/Connect_on_LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/tk-designs/)
+ISC

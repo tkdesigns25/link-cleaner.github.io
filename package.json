@@ -1,13 +1,12 @@
 {
   "name": "link-cleaner",
   "version": "1.0.0",
-  "description": "",
+  "description": "Strip tracking parameters from URLs instantly.",
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["privacy", "url", "tracking", "cleaner"],
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {

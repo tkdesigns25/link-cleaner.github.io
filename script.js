@@ -250,7 +250,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     openBtn.addEventListener('click', () => {
         if (!cleanUrlInput.value) return;
-        window.open(cleanUrlInput.value, '_blank');
+        let url = cleanUrlInput.value;
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+        }
+        window.open(url, '_blank');
     });
 
     shareBtn.addEventListener('click', async () => {

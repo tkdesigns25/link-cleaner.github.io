@@ -117,6 +117,7 @@ body {
   padding: var(--sp-6) var(--sp-3);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: var(--sp-4);
   min-height: 100dvh;
 }
@@ -506,10 +507,7 @@ label {
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
   .container {
-    padding-top: calc(4rem + env(safe-area-inset-top, 0px));
-    padding-left: var(--sp-2);
-    padding-right: var(--sp-2);
-    padding-bottom: var(--sp-4);
+    padding: calc(var(--sp-4) + env(safe-area-inset-top, 0px)) var(--sp-2) var(--sp-4);
     gap: var(--sp-3);
   }
 

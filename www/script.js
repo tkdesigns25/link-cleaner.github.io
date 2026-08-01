@@ -1,16 +1,34 @@
-// Function to handle the shared content
+// Extract a URL from shared intent data (some apps put it in .url, others in .text)
+function extractUrl(data) {
+    if (!data) return null;
+    // Prefer .url if it looks like a URL
+    if (data.url) {
+        const decoded = decodeURIComponent(data.url);
+        if (decoded.startsWith('http')) return decoded;
+    }
+    // Fall back to extracting a URL from .title or .text
+    const raw = data.text || data.title || '';
+    const decoded = decodeURIComponent(raw);
+    const match = decoded.match(/https?:\/\/[^\s"'<>]+/i);
+    return match ? match[0] : (decoded.startsWith('http') ? decoded : null);
+}
+
+// Fill the input field with a shared URL
+function fillInput(url) {
+    if (!url) return;
+    const inputField = document.getElementById('urlInput');
+    if (inputField) {
+        inputField.value = url;
+        inputField.dispatchEvent(new Event('input'));
+    }
+}
+
+// Check for a share intent on cold start
 async function handleSharedIntent() {
     try {
         if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.SendIntent) {
             const result = await Capacitor.Plugins.SendIntent.checkSendIntentReceived();
-            if (result && result.url) {
-                const inputField = document.getElementById('urlInput');
-                if (inputField) {
-                    inputField.value = decodeURIComponent(result.url);
-                    // Trigger input event to update UI state (hide paste button etc)
-                    inputField.dispatchEvent(new Event('input'));
-                }
-            }
+            fillInput(extractUrl(result));
         }
     } catch (err) {
         console.error('Error checking send intent:', err);
@@ -38,14 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listen for future intents (warm start)
     if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.SendIntent) {
         window.Capacitor.Plugins.SendIntent.addListener('appSendActionIntent', (data) => {
-            if (data && data.url) {
-                const inputField = document.getElementById('urlInput');
-                if (inputField) {
-                    inputField.value = decodeURIComponent(data.url);
-                    // Trigger input event to update UI state
-                    inputField.dispatchEvent(new Event('input'));
-                }
-            }
+            fillInput(extractUrl(data));
         });
     }
 });

@@ -122,6 +122,13 @@ body {
   min-height: 100dvh;
 }
 
+.top-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  width: 100%;
+}
+
 /* === HEADER === */
 .site-header {
   display: flex;

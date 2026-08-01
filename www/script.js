@@ -73,6 +73,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('resetBtn');
     const pasteBtn = document.getElementById('pasteBtn');
 
+    // Download banner: hide inside native app, or if user dismissed it
+    const downloadBanner = document.getElementById('downloadBanner');
+    if (downloadBanner) {
+        if (window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) {
+            downloadBanner.classList.add('hidden');
+        } else if (sessionStorage.getItem('bannerDismissed')) {
+            downloadBanner.classList.add('hidden');
+        }
+        const closeBtn = document.getElementById('closeBanner');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                downloadBanner.classList.add('hidden');
+                sessionStorage.setItem('bannerDismissed', '1');
+            });
+        }
+    }
+
     // Toggle Clear/Paste buttons
     function toggleInputButtons() {
         if (urlInput.value.trim().length > 0) {

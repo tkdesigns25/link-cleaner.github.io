@@ -49,8 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check on app load (cold start) with a small delay to ensure plugins are ready
     setTimeout(handleSharedIntent, 500);
-
-    // Also try immediately just in case
     handleSharedIntent();
 
     // Listen for future intents (warm start)
@@ -90,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Toggle Clear/Paste buttons
+    // Toggle Reset/Paste buttons based on input content
     function toggleInputButtons() {
         if (urlInput.value.trim().length > 0) {
             resetBtn.classList.remove('hidden');
@@ -101,147 +99,133 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initial check
     toggleInputButtons();
-
-    // Input event listener
     urlInput.addEventListener('input', toggleInputButtons);
 
-    // Paste Button Click
+    // Paste Button
     if (pasteBtn) {
         pasteBtn.addEventListener('click', async () => {
             try {
                 if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Clipboard) {
-                    const { type, value } = await Capacitor.Plugins.Clipboard.read();
+                    const { value } = await Capacitor.Plugins.Clipboard.read();
                     if (value) {
                         urlInput.value = value;
-                        toggleInputButtons();
-                    } else {
-                        showToast('Clipboard is empty');
+                        urlInput.dispatchEvent(new Event('input'));
                     }
                 } else {
-                    // Fallback for browser testing
                     const text = await navigator.clipboard.readText();
                     urlInput.value = text;
-                    toggleInputButtons();
+                    urlInput.dispatchEvent(new Event('input'));
                 }
             } catch (err) {
                 console.error('Paste failed:', err);
-                showToast('Failed to paste');
             }
         });
     }
 
-    // Reset Button Click
-    resetBtn.addEventListener('click', () => {
-        urlInput.value = '';
-        outputGroup.classList.add('hidden'); // Hide results
-        toggleInputButtons();
-        urlInput.focus();
-    });
+    // Reset Button
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            urlInput.value = '';
+            outputGroup.classList.add('hidden');
+            urlInput.dispatchEvent(new Event('input'));
+            urlInput.focus();
+        });
+    }
 
+    // ─── CLEAN BUTTON ────────────────────────────────────────────────────────
     cleanBtn.addEventListener('click', () => {
         const originalUrl = urlInput.value.trim();
 
         if (!originalUrl) {
-            // Shake animation or error state could be added here
             urlInput.focus();
             return;
         }
 
+        // Auto-prepend protocol if missing
+        const normalised = /^https?:\/\//i.test(originalUrl)
+            ? originalUrl
+            : 'https://' + originalUrl;
+
         try {
-            const url = new URL(originalUrl);
+            const url = new URL(normalised);
             const params = url.searchParams;
 
-            // List of tracking parameters to remove
-            const trackingParams = [
+            // ── Universal tracking params (always removed) ──
+            const always = [
+                // UTM (all variants)
                 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
-                'fbclid', 'gclid', 'gclsrc', 'dclid', 'gra', 'grb', 'grc', 'grd',
-                'si', 'pp', 's', 't', 'igsh' // 't' is tricky, sometimes timestamp, sometimes tracking. 
-                // YouTube uses 't' for timestamp, so we should probably KEEP 't' generally, 
-                // or handle it specifically. The user mentioned "timed link from youtube", 
-                // so we MUST preserve 't' for YouTube. 
-                // 'si' is YouTube share identifier.
+                'utm_id', 'utm_source_platform', 'utm_creative_format', 'utm_marketing_tactic',
+                // Google Ads
+                'gclid', 'gclsrc', 'dclid', 'gbraid', 'wbraid',
+                // Facebook / Meta
+                'fbclid', 'fb_ref', 'fb_source',
+                // Instagram
+                'igsh', 'igshid',
+                // X / Twitter (new & old)
+                'twclid',       // Twitter click ID (like fbclid for ads)
+                'ref_src',      // reference source (e.g. twsrc^tfw)
+                'ref_url',      // referral URL (from embedded tweets)
+                'mx_ref',       // mobile/app referral routing
+                // YouTube
+                'si',           // YouTube share identifier
+                // Email marketing
+                'mc_cid', 'mc_eid',
+                '_hsenc', '_hsmi', 'hsCtaTracking',
+                'mkt_tok', 'vero_id',
+                'oly_enc_id', 'oly_anon_id',
+                // Affiliate / misc
+                'pp', 'zanpid', 'origin',
+                '__twitter_impression', '__s',
             ];
 
-            // Refined list based on user request to keep timestamps
-            const paramsToRemove = [
-                'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
-                'fbclid', 'gclid', 'gclsrc', 'dclid',
-                'si', 'pp', 'igsh'
-            ];
+            always.forEach(p => params.delete(p));
 
-            // Iterate and delete tracking params
-            paramsToRemove.forEach(param => {
-                if (params.has(param)) {
-                    params.delete(param);
-                }
-            });
+            // ── Smart per-domain handling: 's' and 't' ──
+            const host = url.hostname.replace(/^www\./, '');
+            const isYouTube = host === 'youtube.com' || host === 'youtu.be';
+            const isX = host === 'x.com' || host === 'twitter.com' || host === 't.co';
 
-            // Special handling for YouTube 'si' if not caught above (it is caught)
-            // but 't' should be preserved.
+            if (isX) {
+                params.delete('s'); // share surface identifier (e.g. s=20 = iOS)
+                params.delete('t'); // per-share cryptographic token
+            } else if (!isYouTube) {
+                // On non-YouTube sites 's' is usually a tracking/session param
+                params.delete('s');
+                // 't' is left alone on unknown sites (too risky without context)
+            }
+            // On YouTube: 't' (timestamp) and 's' are preserved
 
             cleanUrlInput.value = url.toString();
             outputGroup.classList.remove('hidden');
 
-            // Animate result appearance
             outputGroup.style.opacity = '0';
             outputGroup.style.transform = 'translateY(10px)';
             requestAnimationFrame(() => {
-                outputGroup.style.transition = 'all 0.5s ease';
+                outputGroup.style.transition = 'all 0.4s ease';
                 outputGroup.style.opacity = '1';
                 outputGroup.style.transform = 'translateY(0)';
             });
 
         } catch (e) {
-            // Fallback for non-standard URLs or text that isn't a full URL
-            console.warn("Invalid URL, attempting simple cleanup or returning original", e);
-            // If it's not a valid URL object, maybe it's just a string? 
-            // But the user input placeholder suggests full URLs. 
-            // Let's try to handle cases where protocol might be missing?
-            // For now, if it fails URL parsing, we might just return the original 
-            // or try the simple split as fallback if it looks like a URL.
-
-            // Simple fallback: if it contains '?', try split, otherwise return original
-            if (originalUrl.includes('?')) {
-                // Check if it looks like a URL
-                if (originalUrl.match(/^(http|https):\/\//)) {
-                    // If it failed new URL() but has http, it's really broken.
-                    cleanUrlInput.value = originalUrl;
-                } else {
-                    // Maybe missing protocol?
-                    try {
-                        const fixedUrl = new URL('https://' + originalUrl);
-                        // Recurse or just apply logic here? Let's just apply logic.
-                        const params = fixedUrl.searchParams;
-                        const paramsToRemove = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', 'si', 'pp', 'igsh'];
-                        paramsToRemove.forEach(p => params.delete(p));
-                        cleanUrlInput.value = fixedUrl.toString().replace('https://', ''); // Return as entered? 
-                        // Actually, better to just return cleaned full URL or simple split if complex parsing fails.
-                        // Let's stick to the simple split as a safe fallback for "text" inputs
-                        cleanUrlInput.value = originalUrl.split('?')[0];
-                    } catch (err) {
-                        cleanUrlInput.value = originalUrl.split('?')[0];
-                    }
-                }
-            } else {
-                cleanUrlInput.value = originalUrl;
-            }
+            // Fallback: URL couldn't be parsed (very malformed input)
+            console.warn('Could not parse URL, applying fallback strip:', e);
+            cleanUrlInput.value = normalised.includes('?')
+                ? normalised.split('?')[0]
+                : normalised;
 
             outputGroup.classList.remove('hidden');
             outputGroup.style.opacity = '1';
             outputGroup.style.transform = 'translateY(0)';
         }
     });
+    // ─────────────────────────────────────────────────────────────────────────
 
     copyBtn.addEventListener('click', () => {
         if (!cleanUrlInput.value) return;
-
         navigator.clipboard.writeText(cleanUrlInput.value).then(() => {
             showToast('Copied to clipboard!');
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-            // Fallback for older browsers or if permission denied
+        }).catch(() => {
             cleanUrlInput.select();
             document.execCommand('copy');
             showToast('Copied to clipboard!');
@@ -259,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     shareBtn.addEventListener('click', async () => {
         if (!cleanUrlInput.value) return;
-
         try {
             if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Share) {
                 await Capacitor.Plugins.Share.share({
@@ -277,8 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error('Share failed:', err);
-            // Suppress errors for user cancellation or other share failures
-            // The user specifically requested not to see error popups on exit
         }
     });
 
@@ -290,12 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
-    // Allow "Enter" key to trigger clean
+    // Enter key triggers clean
     urlInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            cleanBtn.click();
-        }
+        if (e.key === 'Enter') cleanBtn.click();
     });
-
-
 });

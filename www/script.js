@@ -181,20 +181,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
             always.forEach(p => params.delete(p));
 
-            // ── Smart per-domain handling: 's' and 't' ──
+            // ── Smart per-domain handling ──
             const host = url.hostname.replace(/^www\./, '');
             const isYouTube = host === 'youtube.com' || host === 'youtu.be';
             const isX = host === 'x.com' || host === 'twitter.com' || host === 't.co';
+            const isTikTok = host === 'tiktok.com';
+            const isReddit = host === 'reddit.com';
 
             if (isX) {
-                params.delete('s'); // share surface identifier (e.g. s=20 = iOS)
-                params.delete('t'); // per-share cryptographic token
+                // Status posts on X (e.g. /username/status/123456) NEVER need query parameters.
+                // Any query parameter attached to a post (?a=..., ?s=..., ?t=...) is pure tracking.
+                if (url.pathname.includes('/status/')) {
+                    url.search = '';
+                } else {
+                    ['a', 's', 't', 'cn', 'ref_src', 'ref_url', 'mx_ref', 'twclid', 'context'].forEach(p => params.delete(p));
+                }
+            } else if (isTikTok) {
+                ['_t', '_r', 'sender_device', 'sender_web_id', 'is_from_webapp'].forEach(p => params.delete(p));
+            } else if (isReddit) {
+                ['share_id', 'rdt', 'ref_source'].forEach(p => params.delete(p));
             } else if (!isYouTube) {
-                // On non-YouTube sites 's' is usually a tracking/session param
+                // On non-YouTube sites, 's' is usually a tracking/referral param
                 params.delete('s');
-                // 't' is left alone on unknown sites (too risky without context)
             }
-            // On YouTube: 't' (timestamp) and 's' are preserved
+            // On YouTube: 't' (timestamp), 'v', 'list' are preserved; 'si' is deleted in always list
 
             cleanUrlInput.value = url.toString();
             outputGroup.classList.remove('hidden');
